@@ -121,6 +121,15 @@
                     </fpc_adminhtml_cache_flush_all>
                 </observers>
             </adminhtml_cache_flush_all>
+            <adminhtml_cache_flush_system>
+                <observers>
+                    <fpc_application_cache_flush_system>
+                        <class>fpc/observer_clean</class>
+                        <type>singleton</type>
+                        <method>flushFpc</method>
+                    </fpc_application_cache_flush_system>
+                </observers>
+            </adminhtml_cache_flush_system>
             <adminhtml_cache_refresh_type>
                 <observers>
                     <fpc_adminhtml_cache_refresh_type>
@@ -130,15 +139,6 @@
                     </fpc_adminhtml_cache_refresh_type>
                 </observers>
             </adminhtml_cache_refresh_type>
-            <application_clean_cache>
-                <observers>
-                    <fpc_application_clean_cache>
-                        <class>fpc/observer_clean</class>
-                        <type>singleton</type>
-                        <method>flushFpc</method>
-                    </fpc_application_clean_cache>
-                </observers>
-            </application_clean_cache>
             <cataloginventory_stock_item_save_after>
                 <observers>
                     <fpc_cataloginventory_stock_item_save_after>
