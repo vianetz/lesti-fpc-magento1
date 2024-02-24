@@ -32,61 +32,61 @@ class Lesti_Fpc_Model_Observer
      */
     public function controllerActionLayoutGenerateBlocksBefore($observer)
     {
-        if ($this->_getFpc()->isActive() &&
-            !$this->_cached &&
-            Mage::helper('fpc')->canCacheRequest()) {
-            $key = Mage::helper('fpc')->getKey();
-            if ($object = $this->_getFpc()->load($key)) {
-                $time = $object->getTime();
-                $body = $object->getContent();
-                $this->_cached = true;
-                $session = Mage::getSingleton('customer/session');
-                $lazyBlocks = Mage::helper('fpc/block')->getLazyBlocks();
-                $dynamicBlocks = Mage::helper('fpc/block')->getDynamicBlocks();
-                $blockHelper = Mage::helper('fpc/block');
-                if ($blockHelper->areLazyBlocksValid()) {
-                    foreach ($lazyBlocks as $blockName) {
-                        $this->_placeholder[] = $blockHelper
-                            ->getPlaceholderHtml($blockName);
-                        $this->_html[] = $session
-                            ->getData('fpc_lazy_block_' . $blockName);
-                    }
-                } else {
-                    $dynamicBlocks = array_merge($dynamicBlocks, $lazyBlocks);
-                }
-                // prepare Layout
-                $layout = $this->_prepareLayout(
-                    $observer->getEvent()->getLayout(),
-                    $dynamicBlocks
-                );
-                // insert dynamic blocks
-                $this->_insertDynamicBlocks(
-                    $layout,
-                    $session,
-                    $dynamicBlocks,
-                    $lazyBlocks
-                );
-                $this->_placeholder[] = self::SESSION_ID_PLACEHOLDER;
-                $this->_html[] = $session->getEncryptedSessionId();
-                $this->_replaceFormKey();
-                $body = str_replace($this->_placeholder, $this->_html, $body);
-                if (Mage::getStoreConfig(self::SHOW_AGE_XML_PATH)) {
-                    Mage::app()->getResponse()->setHeader('Age', time() - $time);
-                }
-                Mage::app()->getResponse()->setHeader('Content-Type', $object->getContentType(), true);
-                $response = Mage::app()->getResponse();
-                $response->setBody($body);
-                Mage::dispatchEvent(
-                    'fpc_http_response_send_before',
-                    array('response' => $response)
-                );
-                $response->sendResponse();
-                exit;
-            }
-            if (Mage::getStoreConfig(self::SHOW_AGE_XML_PATH)) {
-                Mage::app()->getResponse()->setHeader('Age', 0);
-            }
+        if (! $this->_getFpc()->isActive() || $this->_cached || ! Mage::helper('fpc')->canCacheRequest()) {
+            return;
         }
+
+        if (Mage::getStoreConfig(self::SHOW_AGE_XML_PATH)) {
+            Mage::app()->getResponse()->setHeader('Age', 0);
+        }
+
+        $object = $this->_getFpc()->load(Mage::helper('fpc')->getKey());
+        if (! $object) {
+            return;
+        }
+
+        $this->_cached = true;
+        $session = Mage::getSingleton('customer/session');
+        $lazyBlocks = Mage::helper('fpc/block')->getLazyBlocks();
+        $dynamicBlocks = Mage::helper('fpc/block')->getDynamicBlocks();
+
+        if (Mage::helper('fpc/block')->areLazyBlocksValid()) {
+            foreach ($lazyBlocks as $blockName) {
+                $this->_placeholder[] = Mage::helper('fpc/block')->getPlaceholderHtml($blockName);
+                $this->_html[] = $session->getData('fpc_lazy_block_' . $blockName);
+            }
+        } else {
+            $dynamicBlocks = array_merge($dynamicBlocks, $lazyBlocks);
+        }
+
+        // prepare Layout
+        $layout = $this->_prepareLayout(
+            $observer->getEvent()->getLayout(),
+            $dynamicBlocks
+        );
+
+        // insert dynamic blocks
+        $this->_insertDynamicBlocks(
+            $layout,
+            $session,
+            $dynamicBlocks,
+            $lazyBlocks
+        );
+        $this->_placeholder[] = self::SESSION_ID_PLACEHOLDER;
+        $this->_html[] = $session->getEncryptedSessionId();
+        $this->_replaceFormKey();
+        $body = str_replace($this->_placeholder, $this->_html, $object->getContent());
+        if (Mage::getStoreConfig(self::SHOW_AGE_XML_PATH)) {
+            Mage::app()->getResponse()->setHeader('Age', time() - $object->getTime());
+        }
+
+        $response = Mage::app()->getResponse();
+        $response->setHeader('Content-Type', $object->getContentType(), true);
+        $response->setBody($body);
+
+        Mage::dispatchEvent('fpc_http_response_send_before', ['response' => $response, 'cacheObject' => $object]);
+        $response->sendResponse();
+        exit;
     }
 
     /**

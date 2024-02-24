@@ -52,11 +52,13 @@ class Lesti_Fpc_Model_Fpc extends Mage_Core_Model_Cache
         if (Zend_Version::compareVersion('1.12.0') > 0) {
             $this->_defaultBackendOptions = $this->_legacyDefaultBackendOptions;
         }
+
         $node = Mage::getConfig()->getNode('global/fpc');
         $options = array();
         if ($node) {
             $options = $node->asArray();
         }
+
         parent::__construct($options);
     }
 
@@ -69,51 +71,42 @@ class Lesti_Fpc_Model_Fpc extends Mage_Core_Model_Cache
      * @param int $lifeTime
      * @return bool
      */
-    public function save($item, $id, $tags=array(), $lifeTime=null)
+    public function save($item, $id, $tags = [], $lifeTime = null)
     {
-        if (!in_array(self::CACHE_TAG, $tags)) {
+        if (! in_array(self::CACHE_TAG, $tags)) {
             $tags[] = self::CACHE_TAG;
         }
-        if (is_null($lifeTime)) {
+
+        if ($lifeTime === null) {
             $lifeTime = (int) $this->getFrontend()->getOption('lifetime');
         }
-        $data = array(
-            $item->getContent(),
-            $item->getTime(),
-            $item->getContentType(),
-        );
+
         // edit cached object
         $cacheData = new Varien_Object();
-        $cacheData->setCachedata($data);
+        $cacheData->setCachedata([$item->getContent(), $item->getTime(), $item->getContentType()]);
         $cacheData->setCacheId($id);
         $cacheData->setTags($tags);
         $cacheData->setLifeTime($lifeTime);
-        Mage::dispatchEvent(
-            'fpc_save_data_before',
-            array('cache_data' => $cacheData)
-        );
-        $data = $cacheData->getCachedata();
-        $id = $cacheData->getCacheId();
-        $tags = $cacheData->getTags();
-        $lifeTime = $cacheData->getLifeTime();
+
+        Mage::dispatchEvent('fpc_save_data_before', ['cache_data' => $cacheData]);
 
         $compressLevel = Mage::getStoreConfig(self::GZCOMPRESS_LEVEL_XML_PATH);
-        $data = serialize($data);
+        $data = serialize($cacheData->getCachedata());
         if ($compressLevel != -2) {
             $data = gzcompress($data, $compressLevel);
         }
 
         return $this->_frontend->save(
             $data,
-            $this->_id($id),
-            $this->_tags($tags),
-            $lifeTime
+            $this->_id($cacheData->getCacheId()),
+            $this->_tags($cacheData->getTags()),
+            $cacheData->getLifeTime()
         );
     }
 
     /**
      * @param string $id
-     * @return boolean|\Lesti_Fpc_Model_Fpc_CacheItem
+     * @return bool|\Lesti_Fpc_Model_Fpc_CacheItem
      */
     public function load($id)
     {
@@ -121,8 +114,9 @@ class Lesti_Fpc_Model_Fpc extends Mage_Core_Model_Cache
         if ($data === false) {
             return false;
         }
+
         $compressLevel = Mage::getStoreConfig(self::GZCOMPRESS_LEVEL_XML_PATH);
-        if ($data !== false && $compressLevel != -2) {
+        if ($compressLevel != -2) {
             $data = gzuncompress($data);
         }
 
@@ -156,12 +150,8 @@ class Lesti_Fpc_Model_Fpc extends Mage_Core_Model_Cache
         return $res;
     }
 
-    /**
-     * @return bool
-     */
-    public function isActive()
+    public function isActive(): bool
     {
         return Mage::app()->useCache('fpc');
     }
-
 }

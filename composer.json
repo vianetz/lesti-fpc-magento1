@@ -14,11 +14,13 @@
         }
     ],
     "require": {
+        "php": "^7.4||^8.0",
+        "ext-zlib": "*",
         "magento-hackathon/magento-composer-installer": "^3.1 || ^2.1 || ^4.0"
     },
     "require-dev": {
-        "ecomdev/ecomdev_phpunit": "^0.3.7",
-        "phpunit/phpunit": "4.*",
+        "ecomdev/ecomdev_phpunit": "dev-master",
+        "phpunit/phpunit": "^9",
         "phpmd/phpmd": "^2.4",
         "squizlabs/php_codesniffer": "^2.5",
         "sebastian/phpcpd": "^2.0",

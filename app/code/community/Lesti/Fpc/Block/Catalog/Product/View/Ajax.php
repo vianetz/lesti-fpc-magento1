@@ -23,10 +23,7 @@ class Lesti_Fpc_Block_Catalog_Product_View_Ajax extends Mage_Core_Block_Template
     {
         $id = $this->_getProductId();
         if (Mage::getSingleton('fpc/fpc')->isActive() &&
-            in_array(
-                'catalog_product_view',
-                Mage::helper('fpc')->getCacheableActions()
-            ) &&
+            in_array('catalog_product_view', Mage::helper('fpc')->getCacheableActions()) &&
             Mage::helper('fpc/block')->useRecentlyViewedProducts() &&
             $id
         ) {
@@ -38,11 +35,12 @@ class Lesti_Fpc_Block_Catalog_Product_View_Ajax extends Mage_Core_Block_Template
                 )
             );
         }
+
         return false;
     }
 
     /**
-     * @return bool
+     * @return bool|int
      */
     protected function _getProductId()
     {
@@ -50,6 +48,7 @@ class Lesti_Fpc_Block_Catalog_Product_View_Ajax extends Mage_Core_Block_Template
         if ($product) {
             return $product->getId();
         }
+
         return false;
     }
 }

@@ -11,33 +11,20 @@
  * @license   http://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-/**
- * Class Lesti_Fpc_Core_Block_Messages
- */
 class Lesti_Fpc_Core_Block_Messages extends Mage_Core_Block_Messages
 {
-    /**
-     * Retrieve messages in HTML format grouped by type
-     *
-     * @param   string $type
-     * @return  string
-     */
-    public function getGroupedHtml()
+    public function getGroupedHtml(): string
     {
         $html = parent::getGroupedHtml();
 
-        /**
-         * Use single transport object instance for all blocks
-         */
-
-        $_transportObject = new Varien_Object;
-        $_transportObject->setHtml($html);
+        // Use single transport object instance for all blocks
+        $transportObject = new Varien_Object();
+        $transportObject->setHtml($html);
         Mage::dispatchEvent(
             'core_block_messages_get_grouped_html_after',
-            array('block' => $this, 'transport' => $_transportObject)
+            ['block' => $this, 'transport' => $transportObject],
         );
-        $html = $_transportObject->getHtml();
 
-        return $html;
+        return $transportObject->getHtml();
     }
 }
