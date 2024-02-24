@@ -16,18 +16,15 @@
  */
 class Lesti_Fpc_Test_Model_Observer extends Lesti_Fpc_Test_TestCase
 {
-    /**
-     * @var Lesti_Fpc_Model_Observer
-     */
-    protected $_observer;
+    protected Lesti_Fpc_Model_Observer $_observer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_observer = Mage::getSingleton('fpc/observer');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         // unregister observer

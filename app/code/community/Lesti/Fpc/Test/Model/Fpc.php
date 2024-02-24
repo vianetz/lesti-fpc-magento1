@@ -16,12 +16,9 @@
  */
 class Lesti_Fpc_Test_Model_Fpc extends Lesti_Fpc_Test_TestCase
 {
-    /**
-     * @var Lesti_Fpc_Model_Fpc
-     */
-    protected $_fpc;
+    protected Lesti_Fpc_Model_Fpc $_fpc;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_fpc = Mage::getSingleton('fpc/fpc');

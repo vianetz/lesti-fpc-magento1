@@ -16,12 +16,9 @@
  */
 class Lesti_Fpc_Test_Helper_Data extends Lesti_Fpc_Test_TestCase
 {
-    /**
-     * @var Lesti_Fpc_Helper_Data
-     */
-    protected $_helper;
+    protected Lesti_Fpc_Helper_Data $_helper;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_helper = Mage::helper('fpc');

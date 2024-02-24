@@ -17,12 +17,9 @@
 class Lesti_Fpc_Test_Block_Catalog_Product_View_Ajax extends
     Lesti_Fpc_Test_TestCase
 {
-    /**
-     * @var Lesti_Fpc_Block_Catalog_Product_View_Ajax
-     */
-    protected $_catalogProductViewAjaxBlock;
+    protected Lesti_Fpc_Block_Catalog_Product_View_Ajax $_catalogProductViewAjaxBlock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_catalogProductViewAjaxBlock =
@@ -33,7 +30,7 @@ class Lesti_Fpc_Test_Block_Catalog_Product_View_Ajax extends
         Mage::register('current_product', $product);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Mage::unregister('current_product');

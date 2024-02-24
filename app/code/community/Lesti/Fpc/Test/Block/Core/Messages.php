@@ -16,12 +16,9 @@
  */
 class Lesti_Fpc_Test_Block_Core_Messages extends Lesti_Fpc_Test_TestCase
 {
-    /**
-     * @var Lesti_Fpc_Core_Block_Messages
-     */
-    protected $_messagesBlock;
+    protected Lesti_Fpc_Core_Block_Messages $_messagesBlock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_messagesBlock = Mage::app()->getLayout()
@@ -34,14 +31,14 @@ class Lesti_Fpc_Test_Block_Core_Messages extends Lesti_Fpc_Test_TestCase
     public function testGetGroupedHtml()
     {
         $this->assertInstanceOf(
-            'Lesti_Fpc_Core_Block_Messages',
+            Lesti_Fpc_Core_Block_Messages::class,
             $this->_messagesBlock
         );
         $parentClass = get_parent_class($this->_messagesBlock);
         /** @var Mage_Core_Block_Messages $coreMessagesBlock */
         $coreMessagesBlock = new $parentClass;
         $this->assertInstanceOf(
-            'Mage_Core_Block_Messages',
+            Mage_Core_Block_Messages::class,
             $coreMessagesBlock
         );
         $expectedGroupHtml = $coreMessagesBlock->getGroupedHtml();

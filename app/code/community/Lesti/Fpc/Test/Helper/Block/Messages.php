@@ -16,12 +16,9 @@
  */
 class Lesti_Fpc_Test_Helper_Block_Messages extends Lesti_Fpc_Test_TestCase
 {
-    /**
-     * @var Lesti_Fpc_Helper_Block_Messages
-     */
-    protected $_messagesHelper;
+    protected Lesti_Fpc_Helper_Block_Messages $_messagesHelper;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_messagesHelper = Mage::helper('fpc/block_messages');
@@ -48,7 +45,7 @@ class Lesti_Fpc_Test_Helper_Block_Messages extends Lesti_Fpc_Test_TestCase
         $catalogStorage->addSuccess('Fpc is cool.');
         $catalogStorage->addError('Fpc has no errors.');
         $this->assertInstanceOf(
-            'Mage_Core_Model_Layout',
+            Mage_Core_Model_Layout::class,
             $this->_messagesHelper->initLayoutMessages($layout)
         );
 
@@ -69,7 +66,7 @@ class Lesti_Fpc_Test_Helper_Block_Messages extends Lesti_Fpc_Test_TestCase
         $tagStorage->addSuccess('Fpc is cool.');
         $tagStorage->addError('Fpc has no errors.');
         $this->assertInstanceOf(
-            'Mage_Core_Model_Layout',
+            Mage_Core_Model_Layout::class,
             $this->_messagesHelper->initLayoutMessages($layout)
         );
 
@@ -90,7 +87,7 @@ class Lesti_Fpc_Test_Helper_Block_Messages extends Lesti_Fpc_Test_TestCase
         $checkoutStorage->addSuccess('Fpc is cool.');
         $checkoutStorage->addError('Fpc has no errors.');
         $this->assertInstanceOf(
-            'Mage_Core_Model_Layout',
+            Mage_Core_Model_Layout::class,
             $this->_messagesHelper->initLayoutMessages($layout)
         );
 
@@ -111,7 +108,7 @@ class Lesti_Fpc_Test_Helper_Block_Messages extends Lesti_Fpc_Test_TestCase
         $customerStorage->addSuccess('Fpc is cool.');
         $customerStorage->addError('Fpc has no errors.');
         $this->assertInstanceOf(
-            'Mage_Core_Model_Layout',
+            Mage_Core_Model_Layout::class,
             $this->_messagesHelper->initLayoutMessages($layout)
         );
 
@@ -123,14 +120,13 @@ class Lesti_Fpc_Test_Helper_Block_Messages extends Lesti_Fpc_Test_TestCase
 
     /**
      * @test
-     * @expectedException Mage_Core_exception
-     * @expectedExceptionMessage Invalid messages storage "fpc/session"
-     * for layout messages initialization
      */
     public function testInitLayoutInvalidStorage()
     {
+        $this->expectException(Mage_Core_Exception::class);
+        $this->expectExceptionMessage('Invalid messages storage "fpc/session" for layout messages initialization');
+
         $layout = Mage::app()->getLayout();
-        $this->_messagesHelper
-            ->initLayoutMessages($layout, array('fpc/session'));
+        $this->_messagesHelper->initLayoutMessages($layout, array('fpc/session'));
     }
 }

@@ -14,19 +14,14 @@
 /**
  * Class Lesti_Fpc_Test_TestCase
  */
-abstract class Lesti_Fpc_Test_TestCase extends
-    EcomDev_PHPUnit_Test_Case_Controller
+abstract class Lesti_Fpc_Test_TestCase extends EcomDev_PHPUnit_Test_Case_Controller
 {
-    /**
-     * @var Lesti_Fpc_Model_Fpc
-     */
-    protected $_fpc;
-
+    protected Lesti_Fpc_Model_Fpc $_fpc;
+    /** @var array|false */
     protected $_cacheOptions;
+    protected Mage_Core_Model_Cache $_cache;
 
-    protected $_cache;
-
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_fpc = Mage::getSingleton('fpc/fpc');
@@ -43,13 +38,13 @@ abstract class Lesti_Fpc_Test_TestCase extends
             $cacheOptions['fpc'] = 1;
         }
         $this->_cache->saveOptions($cacheOptions);
-        $cacheReflector = new ReflectionClass('Mage_Core_Model_Cache');
+        $cacheReflector = new ReflectionClass(Mage_Core_Model_Cache::class);
         $initOptionsMethod = $cacheReflector->getMethod('_initOptions');
         $initOptionsMethod->setAccessible(true);
         $initOptionsMethod->invokeArgs($this->_cache, array());
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_cache->saveOptions($this->_cacheOptions);
@@ -60,22 +55,13 @@ abstract class Lesti_Fpc_Test_TestCase extends
 
     protected function clearBaseUrlProperty()
     {
-        $storeReflector = new ReflectionClass('Mage_Core_Model_Store');
+        $storeReflector = new ReflectionClass(Mage_Core_Model_Store::class);
         $baseUrlCacheProperty = $storeReflector->getProperty('_baseUrlCache');
         $baseUrlCacheProperty->setAccessible(true);
         $baseUrlCacheProperty->setValue(Mage::app()->getStore(), array());
     }
 
-    /**
-     * @param $routeName
-     * @param $controllerName
-     * @param $actionName
-     */
-    protected function setFullActionName(
-        $routeName,
-        $controllerName,
-        $actionName
-    )
+    protected function setFullActionName(string $routeName, string $controllerName, string $actionName)
     {
         Mage::app()->getRequest()->setRouteName($routeName);
         Mage::app()->getRequest()->setControllerName($controllerName);

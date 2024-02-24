@@ -10,8 +10,7 @@
 /**
  * Class Lesti_Fpc_Test_Controller_Catalog_ProductController
  */
-class Lesti_Fpc_Test_Controller_Catalog_ProductController extends
-    Lesti_Fpc_Test_TestCase
+class Lesti_Fpc_Test_Controller_Catalog_ProductController extends Lesti_Fpc_Test_TestCase
 {
     /**
      * @test

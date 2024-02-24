@@ -18,12 +18,9 @@
  */
 class Lesti_Fpc_Test_Helper_Block extends Lesti_Fpc_Test_TestCase
 {
-    /**
-     * @var Lesti_Fpc_Helper_Block
-     */
-    protected $_blockHelper;
+    protected Lesti_Fpc_Helper_Block $_blockHelper;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_blockHelper = Mage::helper('fpc/block');
