@@ -27,17 +27,14 @@ class Lesti_Fpc_Model_Observer_Clean
     {
         // type only exist for event adminhtml_cache_refresh_type
         $type = $observer->getEvent()->getData('type');
-        if (! empty($type) && $type !== self::CACHE_TYPE) {
+        if (! empty($type) && ($type !== self::CACHE_TYPE || ! $this->_getFpc()->isActive())) {
             return;
         }
 
         $this->_getFpc()->clean();
     }
 
-    /**
-     * @return Lesti_Fpc_Model_Fpc
-     */
-    protected function _getFpc()
+    protected function _getFpc(): Lesti_Fpc_Model_Fpc
     {
         return Mage::getSingleton('fpc/fpc');
     }
